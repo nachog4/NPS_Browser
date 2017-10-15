@@ -239,7 +239,7 @@ namespace NoPayStationBrowser
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NoPayStationBrowser";
-            this.Text = "NoPayStationBrowser v0.2";
+            this.Text = "NoPayStationBrowser v0.3";
             this.Load += new System.EventHandler(this.NoPayStationBrowser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
