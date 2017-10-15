@@ -15,21 +15,28 @@ namespace NoPayStationBrowser
     public partial class NoPayStationBrowser : Form
     {
 
-        List<Item> database = new List<Item>();
+        List<Item> currentDatabase = new List<Item>();
+        List<Item> gamesDbs = new List<Item>();
+        List<Item> dlcsDbs = new List<Item>();
 
         public NoPayStationBrowser()
         {
             InitializeComponent();
             new Settings();
 
-            if (Settings.instance.pkgPath == null)
+            if (string.IsNullOrEmpty(Settings.instance.pkgPath))
             {
                 MessageBox.Show("You need to perform initial configuration", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Options o = new Options();
                 o.ShowDialog();
             }
+            else if (!File.Exists(Settings.instance.pkgPath))
+            {
+                MessageBox.Show("You are missing your pkg_dec.exe", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Options o = new Options();
+                o.ShowDialog();
+            }
 
-            //Console.WriteLine(Settings.instance.pkgParams);
         }
 
 
@@ -54,36 +61,38 @@ namespace NoPayStationBrowser
 
         private void NoPayStationBrowser_Load(object sender, EventArgs e)
         {
+
+            gamesDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=1180017671");
+
+            dlcsDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=743196745");
+
+            currentDatabase = gamesDbs;
+
+            RefreshList(currentDatabase);
+
+        }
+
+        List<Item> LoadDatabase(string path)
+        {
+            List<Item> dbs = new List<Item>();
             WebClient wc = new WebClient();
+            string content = wc.DownloadString(new Uri(path));
+            wc.Dispose(); 
+            content = Encoding.UTF8.GetString(Encoding.Default.GetBytes(content));
 
-            // http://msdn.microsoft.com/en-us/library/ms144200.aspx
-            string priceList = wc.DownloadString(
-                new Uri("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=1180017671"));
-
-            wc.Dispose(); // Free resources
-
-            priceList = Encoding.UTF8.GetString(Encoding.Default.GetBytes(priceList));
-
-            string[] lines = priceList.Split(new string[] {
-        "\r\n",
-        "\n\r", // Rarely ever used, but be prepared
-        "\n", // Match this and
-        "\r" }, // this last
-            StringSplitOptions.None);
+            string[] lines = content.Split(new string[] { "\r\n", "\n\r", "\n", "\r" }, StringSplitOptions.None);
 
             for (int i = 1; i < lines.Length; i++)
             {
                 var a = lines[i].Split('\t');
                 var itm = new Item(a[0], a[1], a[2], a[3], a[4]);
                 if (!itm.zRfi.ToLower().Contains("missing") && itm.pkg.ToLower().Contains("http://"))
-                    database.Add(itm);
+                    dbs.Add(itm);
             }
 
+            dbs = dbs.OrderBy(i => i.TitleName).ToList();
 
-            database = database.OrderBy(i => i.TitleName).ToList();
-
-            RefreshList(database);
-
+            return dbs;
         }
 
 
@@ -106,7 +115,7 @@ namespace NoPayStationBrowser
         {
             List<Item> itms = new List<Item>();
 
-            foreach (var item in database)
+            foreach (var item in currentDatabase)
             {
                 if (item.CompareName(textBox1.Text))
                     itms.Add(item);
@@ -114,6 +123,7 @@ namespace NoPayStationBrowser
 
             RefreshList(itms);
         }
+
         Item currentDownload = null;
 
         private void button1_Click(object sender, EventArgs e)
@@ -121,6 +131,14 @@ namespace NoPayStationBrowser
             if (string.IsNullOrEmpty(Settings.instance.downloadDir) || string.IsNullOrEmpty(Settings.instance.pkgPath))
             {
                 MessageBox.Show("You don't have proper config", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Options o = new Options();
+                o.ShowDialog();
+                return;
+            }
+
+            if(!File.Exists(Settings.instance.pkgPath))
+            {
+                MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Options o = new Options();
                 o.ShowDialog();
                 return;
@@ -197,9 +215,8 @@ namespace NoPayStationBrowser
 
             System.Diagnostics.ProcessStartInfo a = new System.Diagnostics.ProcessStartInfo();
             a.WorkingDirectory = Settings.instance.downloadDir + "\\";
-            a.FileName = "CMD.exe";
-            a.Arguments = "/C " + Settings.instance.pkgPath + " " + Settings.instance.pkgParams.ToLower().Replace("{pkgfile}", Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg").Replace("{zrifkey}", currentDownload.zRfi);
-            // MessageBox.Show(a.Arguments);
+            a.FileName = string.Format("\"{0}\"", Settings.instance.pkgPath);
+            a.Arguments = Settings.instance.pkgParams.ToLower().Replace("{pkgfile}", "\"" + Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg\"").Replace("{zrifkey}", currentDownload.zRfi);
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.StartInfo = a;
 
@@ -211,68 +228,25 @@ namespace NoPayStationBrowser
             Options o = new Options();
             o.ShowDialog();
         }
-    }
 
-
-    class Item
-    {
-        public string TitleId, Region, TitleName, zRfi, pkg;
-
-        public Item(string TitleId, string Region, string TitleName, string pkg, string zrif)
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            this.TitleId = TitleId;
-            this.Region = Region;
-            this.TitleName = TitleName;
-            this.pkg = pkg;
-            this.zRfi = zrif;
+            if (radioButton2.Checked == true)
+            {
+                currentDatabase = dlcsDbs;
+                textBox1_TextChanged(null, null);
+            }
         }
 
-        public bool CompareName(string name)
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            name = name.ToLower();
-
-            if (this.TitleId.ToLower().Contains(name)) return true;
-            if (this.TitleName.ToLower().Contains(name)) return true;
-            return false;
+            if (radioButton1.Checked == true)
+            {
+                currentDatabase = gamesDbs;
+                textBox1_TextChanged(null, null);
+            }
         }
     }
 
-    public class Settings
-    {
-        const string userRoot = "HKEY_CURRENT_USER\\SOFTWARE";
-        const string subkey = "NoPayStationBrowser";
-        const string keyName = userRoot + "\\" + subkey;
 
-        public static Settings instance;
-
-        public string defaultRegion;
-        public string downloadDir;
-        public string pkgPath;
-        public string pkgParams;
-
-        public Settings()
-        {
-            instance = this;
-            defaultRegion = Registry.GetValue(keyName, "region", "ALL")?.ToString();
-            downloadDir = Registry.GetValue(keyName, "downloadDir", "")?.ToString();
-            pkgPath = Registry.GetValue(keyName, "pkgPath", "")?.ToString();
-            pkgParams = Registry.GetValue(keyName, "pkgParams", "{pkgFile} --make-dirs=ux --license='{zRifKey}'")?.ToString();
-
-            if (pkgParams == null) pkgParams = "{pkgFile} --make-dirs=ux --license=\"{zRifKey}\"";
-            if (defaultRegion == null) defaultRegion = "ALL";
-
-
-        }
-
-        public void Store()
-        {
-            if (downloadDir != null)
-                Registry.SetValue(keyName, "downloadDir", downloadDir);
-            if (pkgPath != null)
-                Registry.SetValue(keyName, "pkgPath", pkgPath);
-            if (pkgParams != null)
-                Registry.SetValue(keyName, "pkgParams", pkgParams);
-        }
-
-    }
 }
