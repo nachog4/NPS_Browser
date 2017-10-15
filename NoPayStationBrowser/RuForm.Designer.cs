@@ -46,7 +46,10 @@ namespace NoPayStationBrowser
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -71,14 +74,14 @@ namespace NoPayStationBrowser
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.exitToolStripMenuItem.Tag = "Exit";
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -98,6 +101,7 @@ namespace NoPayStationBrowser
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -124,7 +128,7 @@ namespace NoPayStationBrowser
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(507, 75);
+            this.button1.Location = new System.Drawing.Point(507, 29);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(247, 23);
             this.button1.TabIndex = 3;
@@ -134,7 +138,7 @@ namespace NoPayStationBrowser
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(507, 105);
+            this.progressBar1.Location = new System.Drawing.Point(507, 57);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(247, 23);
             this.progressBar1.TabIndex = 4;
@@ -150,7 +154,7 @@ namespace NoPayStationBrowser
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(507, 131);
+            this.label2.Location = new System.Drawing.Point(507, 83);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(247, 17);
             this.label2.TabIndex = 6;
@@ -158,7 +162,7 @@ namespace NoPayStationBrowser
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(507, 157);
+            this.label3.Location = new System.Drawing.Point(507, 109);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(247, 17);
             this.label3.TabIndex = 7;
@@ -197,11 +201,30 @@ namespace NoPayStationBrowser
             this.label4.TabIndex = 10;
             this.label4.Text = "Browse for:";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.ImageLocation = "";
+            this.pictureBox1.Location = new System.Drawing.Point(510, 129);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(244, 176);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(510, 317);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(244, 72);
+            this.label5.TabIndex = 12;
+            // 
             // NoPayStationBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(767, 414);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
@@ -220,6 +243,7 @@ namespace NoPayStationBrowser
             this.Load += new System.EventHandler(this.NoPayStationBrowser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,6 +273,8 @@ namespace NoPayStationBrowser
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label5;
     }
 }
 

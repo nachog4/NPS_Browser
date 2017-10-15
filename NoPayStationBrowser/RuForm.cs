@@ -35,6 +35,9 @@ namespace NoPayStationBrowser
                 o.ShowDialog();
             }
 
+
+            //   Helpers.ImgDownloader.GetImage();
+
         }
 
 
@@ -75,7 +78,7 @@ namespace NoPayStationBrowser
             List<Item> dbs = new List<Item>();
             WebClient wc = new WebClient();
             string content = wc.DownloadString(new Uri(path));
-            wc.Dispose(); 
+            wc.Dispose();
             content = Encoding.UTF8.GetString(Encoding.Default.GetBytes(content));
 
             string[] lines = content.Split(new string[] { "\r\n", "\n\r", "\n", "\r" }, StringSplitOptions.None);
@@ -134,7 +137,7 @@ namespace NoPayStationBrowser
                 return;
             }
 
-            if(!File.Exists(Settings.instance.pkgPath))
+            if (!File.Exists(Settings.instance.pkgPath))
             {
                 MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Options o = new Options();
@@ -243,6 +246,25 @@ namespace NoPayStationBrowser
                 currentDatabase = gamesDbs;
                 textBox1_TextChanged(null, null);
             }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0) return;
+            Item itm = (listView1.SelectedItems[0].Tag as Item);
+            var r = Helpers.DataDownloader.GetRenascene(itm.TitleId);
+            if (r != null)
+            {
+                pictureBox1.LoadAsync(r.imgUrl);
+                label5.Text = r.ToString();
+            }
+            else
+            {
+                pictureBox1.Image = null;
+                label5.Text = "";
+            }
+
+
         }
     }
 
