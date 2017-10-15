@@ -129,29 +129,37 @@ namespace NoPayStationBrowser
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Settings.instance.downloadDir) || string.IsNullOrEmpty(Settings.instance.pkgPath))
+            if (button1.Text == "Cancel")
             {
-                MessageBox.Show("You don't have proper config", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Options o = new Options();
-                o.ShowDialog();
-                return;
+                currentDownloadWebClient.CancelAsync();
             }
-
-            if (!File.Exists(Settings.instance.pkgPath))
+            else
             {
-                MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Options o = new Options();
-                o.ShowDialog();
-                return;
-            }
+                if (string.IsNullOrEmpty(Settings.instance.downloadDir) || string.IsNullOrEmpty(Settings.instance.pkgPath))
+                {
+                    MessageBox.Show("You don't have proper config", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Options o = new Options();
+                    o.ShowDialog();
+                    return;
+                }
 
-            if (listView1.SelectedItems.Count == 0) return;
-            button1.Enabled = false;
-            button1.Text = "Downloading...";
-            var a = (listView1.SelectedItems[0].Tag as Item);
-            DownloadFile(a);
+                if (!File.Exists(Settings.instance.pkgPath))
+                {
+                    MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Options o = new Options();
+                    o.ShowDialog();
+                    return;
+                }
+
+                if (listView1.SelectedItems.Count == 0) return;
+                //button1.Enabled = false;
+                button1.Text = "Cancel";
+                var a = (listView1.SelectedItems[0].Tag as Item);
+                DownloadFile(a);
+            }
         }
 
+        WebClient currentDownloadWebClient = null;
 
         private void DownloadFile(Item item)
         {
@@ -159,6 +167,7 @@ namespace NoPayStationBrowser
             {
                 currentDownload = item;
                 WebClient webClient = new WebClient();
+                currentDownloadWebClient = webClient;
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompleted);
                 webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
                 webClient.DownloadProgressChanged += (sender, e) => progressChangeForSpeed(e.BytesReceived);
@@ -208,20 +217,27 @@ namespace NoPayStationBrowser
 
         private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
+
             button1.Text = "Download and unpack";
             label2.Text = "";
             label3.Text = "";
             progressBar1.Value = 0;
             button1.Enabled = true;
+            if (!e.Cancelled)
+            {
+                System.Diagnostics.ProcessStartInfo a = new System.Diagnostics.ProcessStartInfo();
+                a.WorkingDirectory = Settings.instance.downloadDir + "\\";
+                a.FileName = string.Format("\"{0}\"", Settings.instance.pkgPath);
+                a.Arguments = Settings.instance.pkgParams.ToLower().Replace("{pkgfile}", "\"" + Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg\"").Replace("{zrifkey}", currentDownload.zRfi);
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = a;
 
-            System.Diagnostics.ProcessStartInfo a = new System.Diagnostics.ProcessStartInfo();
-            a.WorkingDirectory = Settings.instance.downloadDir + "\\";
-            a.FileName = string.Format("\"{0}\"", Settings.instance.pkgPath);
-            a.Arguments = Settings.instance.pkgParams.ToLower().Replace("{pkgfile}", "\"" + Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg\"").Replace("{zrifkey}", currentDownload.zRfi);
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = a;
-
-            proc.Start();
+                proc.Start();
+            }
+            else
+            {
+                File.Delete(Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg");
+            }
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
