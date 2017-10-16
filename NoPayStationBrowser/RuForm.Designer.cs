@@ -315,7 +315,7 @@ namespace NoPayStationBrowser
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NoPayStationBrowser";
-            this.Text = "NPS Browser v0.4";
+            this.Text = "NPS Browser v0.5";
             this.Load += new System.EventHandler(this.NoPayStationBrowser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

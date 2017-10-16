@@ -26,6 +26,8 @@ namespace NoPayStationBrowser
             textDownload.Text = Settings.instance.downloadDir;
             textPKGPath.Text = Settings.instance.pkgPath;
             textParams.Text = Settings.instance.pkgParams;
+            textBox1.Text = Settings.instance.GamesUri;
+            textBox2.Text = Settings.instance.DLCUri;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -61,9 +63,39 @@ namespace NoPayStationBrowser
         private void Options_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.instance.pkgParams = textParams.Text;
+            Settings.instance.GamesUri = textBox1.Text;
+            Settings.instance.DLCUri = textBox2.Text;
             Settings.instance.Store();
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new OpenFileDialog())
+            {
+                fbd.Filter = "|*.tsv";
 
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.FileName))
+                {
+                    textBox1.Text = fbd.FileName;
+                }
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new OpenFileDialog())
+            {
+                fbd.Filter = "|*.tsv";
+
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.FileName))
+                {
+                    textBox2.Text = fbd.FileName;
+                }
+            }
+        }
     }
 }

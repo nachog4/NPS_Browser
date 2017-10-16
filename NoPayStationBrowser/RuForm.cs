@@ -26,9 +26,9 @@ namespace NoPayStationBrowser
             InitializeComponent();
             new Settings();
 
-            if (string.IsNullOrEmpty(Settings.instance.pkgPath))
+            if (string.IsNullOrEmpty(Settings.instance.GamesUri) && string.IsNullOrEmpty(Settings.instance.DLCUri))
             {
-                MessageBox.Show("You need to perform initial configuration", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Application did not provide any links to external files or decrypt mechanism.\r\nYou need to specify tsv (tab splitted text) file with your personal links to pkg files on your own.\r\n\r\nFormat: TitleId Region Name Pkg key", "Disclaimer!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Options o = new Options();
                 o.ShowDialog();
             }
@@ -38,9 +38,6 @@ namespace NoPayStationBrowser
                 Options o = new Options();
                 o.ShowDialog();
             }
-
-
-            //   Helpers.ImgDownloader.GetImage();
 
         }
 
@@ -66,16 +63,20 @@ namespace NoPayStationBrowser
 
         private void NoPayStationBrowser_Load(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(Settings.instance.GamesUri))
+                gamesDbs = LoadDatabase(Settings.instance.GamesUri);
+            else radioButton1.Enabled = false;
 
-            gamesDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=1180017671");
+            if (!string.IsNullOrEmpty(Settings.instance.DLCUri))
+                dlcsDbs = LoadDatabase(Settings.instance.DLCUri);
+            else radioButton2.Enabled = false;
 
-            dlcsDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=743196745");
 
             currentDatabase = gamesDbs;
 
             comboBox1.Items.Add("ALL");
             comboBox1.Text = "ALL";
-            
+
             //RefreshList(currentDatabase);
             if (Settings.instance.records != 0)
             {
@@ -92,27 +93,34 @@ namespace NoPayStationBrowser
 
         List<Item> LoadDatabase(string path)
         {
+            path = new Uri(path).ToString();
             List<Item> dbs = new List<Item>();
-            WebClient wc = new WebClient();
-            string content = wc.DownloadString(new Uri(path));
-            wc.Dispose();
-            content = Encoding.UTF8.GetString(Encoding.Default.GetBytes(content));
-
-            string[] lines = content.Split(new string[] { "\r\n", "\n\r", "\n", "\r" }, StringSplitOptions.None);
-
-            for (int i = 1; i < lines.Length; i++)
+            try
             {
-                var a = lines[i].Split('\t');
-                var itm = new Item(a[0], a[1], a[2], a[3], a[4]);
-                if (!itm.zRfi.ToLower().Contains("missing") && itm.pkg.ToLower().Contains("http://"))
+                WebClient wc = new WebClient();
+                string content = wc.DownloadString(new Uri(path));
+                wc.Dispose();
+                content = Encoding.UTF8.GetString(Encoding.Default.GetBytes(content));
+
+                string[] lines = content.Split(new string[] { "\r\n", "\n\r", "\n", "\r" }, StringSplitOptions.None);
+
+                for (int i = 1; i < lines.Length; i++)
                 {
-                    dbs.Add(itm);
-                    regions.Add(itm.Region.Replace(" ", ""));
+                    var a = lines[i].Split('\t');
+                    var itm = new Item(a[0], a[1], a[2], a[3], a[4]);
+                    if (!itm.zRfi.ToLower().Contains("missing") && itm.pkg.ToLower().Contains("http://"))
+                    {
+                        dbs.Add(itm);
+                        regions.Add(itm.Region.Replace(" ", ""));
+                    }
                 }
+
+                dbs = dbs.OrderBy(i => i.TitleName).ToList();
             }
+            catch (Exception err)
+            {
 
-            dbs = dbs.OrderBy(i => i.TitleName).ToList();
-
+            }
             return dbs;
         }
 
