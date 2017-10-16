@@ -28,6 +28,7 @@ namespace NoPayStationBrowser
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoPayStationBrowser));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,17 +40,26 @@ namespace NoPayStationBrowser
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.retryUnpackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.listViewEx1 = new ListViewEmbeddedControls.ListViewEx();
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clearCompletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -58,7 +68,7 @@ namespace NoPayStationBrowser
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(767, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(761, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip";
             // 
@@ -128,20 +138,13 @@ namespace NoPayStationBrowser
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(507, 29);
+            this.button1.Location = new System.Drawing.Point(510, 73);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(247, 23);
             this.button1.TabIndex = 3;
             this.button1.Text = "Download and unpack";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(507, 57);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(247, 23);
-            this.progressBar1.TabIndex = 4;
             // 
             // label1
             // 
@@ -151,22 +154,6 @@ namespace NoPayStationBrowser
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "label1";
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(507, 83);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(247, 17);
-            this.label2.TabIndex = 6;
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(507, 109);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(247, 17);
-            this.label3.TabIndex = 7;
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // radioButton1
             // 
@@ -204,9 +191,9 @@ namespace NoPayStationBrowser
             // pictureBox1
             // 
             this.pictureBox1.ImageLocation = "";
-            this.pictureBox1.Location = new System.Drawing.Point(510, 129);
+            this.pictureBox1.Location = new System.Drawing.Point(510, 102);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(244, 176);
+            this.pictureBox1.Size = new System.Drawing.Size(244, 212);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 11;
             this.pictureBox1.TabStop = false;
@@ -218,20 +205,98 @@ namespace NoPayStationBrowser
             this.label5.Size = new System.Drawing.Size(244, 72);
             this.label5.TabIndex = 12;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2,
+            this.retryUnpackToolStripMenuItem,
+            this.clearCompletedToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(162, 92);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(161, 22);
+            this.toolStripMenuItem1.Text = "Cancel";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(161, 22);
+            this.toolStripMenuItem2.Text = "Delete pkg file";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            // 
+            // retryUnpackToolStripMenuItem
+            // 
+            this.retryUnpackToolStripMenuItem.Name = "retryUnpackToolStripMenuItem";
+            this.retryUnpackToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.retryUnpackToolStripMenuItem.Text = "Retry unpack";
+            this.retryUnpackToolStripMenuItem.Click += new System.EventHandler(this.retryUnpackToolStripMenuItem_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // listViewEx1
+            // 
+            this.listViewEx1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader8,
+            this.columnHeader9,
+            this.columnHeader10,
+            this.columnHeader11});
+            this.listViewEx1.ContextMenuStrip = this.contextMenuStrip1;
+            this.listViewEx1.FullRowSelect = true;
+            this.listViewEx1.Location = new System.Drawing.Point(12, 418);
+            this.listViewEx1.Name = "listViewEx1";
+            this.listViewEx1.Size = new System.Drawing.Size(737, 94);
+            this.listViewEx1.TabIndex = 14;
+            this.listViewEx1.UseCompatibleStateImageBehavior = false;
+            this.listViewEx1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Title";
+            this.columnHeader8.Width = 228;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Speed";
+            this.columnHeader9.Width = 104;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "Progress";
+            this.columnHeader10.Width = 144;
+            // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "";
+            this.columnHeader11.Width = 224;
+            // 
+            // clearCompletedToolStripMenuItem
+            // 
+            this.clearCompletedToolStripMenuItem.Name = "clearCompletedToolStripMenuItem";
+            this.clearCompletedToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.clearCompletedToolStripMenuItem.Text = "Clear completed";
+            this.clearCompletedToolStripMenuItem.Click += new System.EventHandler(this.clearCompletedToolStripMenuItem_Click);
+            // 
             // NoPayStationBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(767, 414);
+            this.ClientSize = new System.Drawing.Size(761, 524);
+            this.Controls.Add(this.listViewEx1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.listView1);
@@ -239,11 +304,12 @@ namespace NoPayStationBrowser
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NoPayStationBrowser";
-            this.Text = "NoPayStationBrowser v0.3";
+            this.Text = "NPS Browser v0.4";
             this.Load += new System.EventHandler(this.NoPayStationBrowser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,15 +332,23 @@ namespace NoPayStationBrowser
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem retryUnpackToolStripMenuItem;
+        private System.Windows.Forms.Timer timer1;
+        private ListViewEmbeddedControls.ListViewEx listViewEx1;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ToolStripMenuItem clearCompletedToolStripMenuItem;
     }
 }
 

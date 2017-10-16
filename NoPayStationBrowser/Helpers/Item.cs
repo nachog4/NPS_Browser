@@ -2,7 +2,7 @@
 
 namespace NoPayStationBrowser
 {
-    class Item
+    public class Item
     {
         public string TitleId, Region, TitleName, zRfi, pkg;
 
@@ -25,5 +25,5 @@ namespace NoPayStationBrowser
         }
     }
 
-   
+
 }

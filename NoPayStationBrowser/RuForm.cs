@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,9 @@ namespace NoPayStationBrowser
         List<Item> currentDatabase = new List<Item>();
         List<Item> gamesDbs = new List<Item>();
         List<Item> dlcsDbs = new List<Item>();
+        HashSet<string> regions = new HashSet<string>();
+
+        List<DownloadWorker> downloads = new List<DownloadWorker>();
 
         public NoPayStationBrowser()
         {
@@ -65,8 +69,6 @@ namespace NoPayStationBrowser
 
             gamesDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=1180017671");
 
-
-
             dlcsDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=743196745");
 
             currentDatabase = gamesDbs;
@@ -98,7 +100,10 @@ namespace NoPayStationBrowser
                 var a = lines[i].Split('\t');
                 var itm = new Item(a[0], a[1], a[2], a[3], a[4]);
                 if (!itm.zRfi.ToLower().Contains("missing") && itm.pkg.ToLower().Contains("http://"))
+                {
                     dbs.Add(itm);
+                    regions.Add(itm.Region);
+                }
             }
 
             dbs = dbs.OrderBy(i => i.TitleName).ToList();
@@ -135,119 +140,41 @@ namespace NoPayStationBrowser
             RefreshList(itms);
         }
 
-        Item currentDownload = null;
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (button1.Text == "Cancel")
+
+
+            if (string.IsNullOrEmpty(Settings.instance.downloadDir) || string.IsNullOrEmpty(Settings.instance.pkgPath))
             {
-                currentDownloadWebClient.CancelAsync();
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(Settings.instance.downloadDir) || string.IsNullOrEmpty(Settings.instance.pkgPath))
-                {
-                    MessageBox.Show("You don't have proper config", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Options o = new Options();
-                    o.ShowDialog();
-                    return;
-                }
-
-                if (!File.Exists(Settings.instance.pkgPath))
-                {
-                    MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Options o = new Options();
-                    o.ShowDialog();
-                    return;
-                }
-
-                if (listView1.SelectedItems.Count == 0) return;
-                //button1.Enabled = false;
-                button1.Text = "Cancel";
-                var a = (listView1.SelectedItems[0].Tag as Item);
-                DownloadFile(a);
-            }
-        }
-
-        WebClient currentDownloadWebClient = null;
-
-        private void DownloadFile(Item item)
-        {
-            try
-            {
-                currentDownload = item;
-                WebClient webClient = new WebClient();
-                currentDownloadWebClient = webClient;
-                webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompleted);
-                webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                webClient.DownloadProgressChanged += (sender, e) => progressChangeForSpeed(e.BytesReceived);
-                webClient.DownloadFileAsync(new Uri(item.pkg), Settings.instance.downloadDir + "\\" + item.TitleId + ".pkg");
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-            }
-        }
-
-        DateTime lastUpdate;
-        long lastBytes = 0;
-
-        private void progressChangeForSpeed(long bytes)
-        {
-            if (lastBytes == 0)
-            {
-                lastUpdate = DateTime.Now;
-                lastBytes = bytes;
+                MessageBox.Show("You don't have proper config", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Options o = new Options();
+                o.ShowDialog();
                 return;
             }
 
-            var now = DateTime.Now;
-            var timeSpan = now - lastUpdate;
-            var bytesChange = bytes - lastBytes;
-            if (timeSpan.Seconds == 0) return;
-            var bytesPerSecond = bytesChange / timeSpan.Seconds;
-            lastBytes = bytes;
-            lastUpdate = now;
-
-            bytesPerSecond = bytesPerSecond / 1024;
-            if (bytesPerSecond < 1500)
-                label3.Text = bytesPerSecond.ToString() + " KB/s";
-            else
+            if (!File.Exists(Settings.instance.pkgPath))
             {
-                label3.Text = ((float)((float)bytesPerSecond / 1024)).ToString("0.00") + " MB/s";
+                MessageBox.Show("You missing your pkg dec", "Whops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Options o = new Options();
+                o.ShowDialog();
+                return;
             }
 
-        }
+            if (listView1.SelectedItems.Count == 0) return;
+            var a = (listView1.SelectedItems[0].Tag as Item);
 
-        private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            label2.Text = ((float)((float)e.BytesReceived / (1024 * 1024))).ToString("0.00") + " MB / " + ((float)((float)e.TotalBytesToReceive / (1024 * 1024))).ToString("0.00") + " MB";
-            progressBar1.Value = e.ProgressPercentage;
-        }
 
-        private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
-        {
+            foreach (var d in downloads)
+                if (d.currentDownload == a)
+                    return; //already downloading
 
-            button1.Text = "Download and unpack";
-            label2.Text = "";
-            label3.Text = "";
-            progressBar1.Value = 0;
-            button1.Enabled = true;
-            if (!e.Cancelled)
-            {
-                System.Diagnostics.ProcessStartInfo a = new System.Diagnostics.ProcessStartInfo();
-                a.WorkingDirectory = Settings.instance.downloadDir + "\\";
-                a.FileName = string.Format("\"{0}\"", Settings.instance.pkgPath);
-                a.Arguments = Settings.instance.pkgParams.ToLower().Replace("{pkgfile}", "\"" + Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg\"").Replace("{zrifkey}", currentDownload.zRfi);
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = a;
 
-                proc.Start();
-            }
-            else
-            {
-                File.Delete(Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg");
-            }
+            DownloadWorker dw = new DownloadWorker(a);
+            listViewEx1.Items.Add(dw.lvi);
+            listViewEx1.AddEmbeddedControl(dw.progress, 3, listViewEx1.Items.Count - 1);
+            downloads.Add(dw);
+
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -291,6 +218,82 @@ namespace NoPayStationBrowser
                 pictureBox1.Image = null;
                 label5.Text = "";
             }
+
+
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (listViewEx1.SelectedItems.Count == 0) return;
+            (listViewEx1.SelectedItems[0].Tag as DownloadWorker).Cancel();
+            (listViewEx1.SelectedItems[0].Tag as DownloadWorker).DeletePkg();
+
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (listViewEx1.SelectedItems.Count == 0) return;
+            (listViewEx1.SelectedItems[0].Tag as DownloadWorker).DeletePkg();
+
+        }
+
+        private void retryUnpackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewEx1.SelectedItems.Count == 0) return;
+
+            (listViewEx1.SelectedItems[0].Tag as DownloadWorker).Unpack();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            int workingThreads = 0;
+            foreach (var dw in downloads)
+            {
+                if (!dw.isCompleted && dw.isRunning)
+                    workingThreads++;
+            }
+
+            if (workingThreads < 2)
+            {
+                foreach (var dw in downloads)
+                {
+                    if (!dw.isCompleted && !dw.isRunning && !dw.isCanceled)
+                    {
+                        dw.Start();
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void clearCompletedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<DownloadWorker> toDel = new List<DownloadWorker>();
+            List<ListViewItem> toDelLVI = new List<ListViewItem>();
+
+            foreach (var i in downloads)
+            {
+                if (i.isCompleted || i.isCanceled)
+                {
+                    toDel.Add(i);
+                }
+            }
+
+
+            foreach (ListViewItem i in listViewEx1.Items)
+            {
+                if (toDel.Contains(i.Tag as DownloadWorker))
+                    toDelLVI.Add(i);
+
+            }
+
+            foreach (var i in toDel)
+                downloads.Remove(i);
+            toDel.Clear();
+
+            foreach (var i in toDelLVI)
+                listViewEx1.Items.Remove(i);
+            toDelLVI.Clear();
 
 
         }
