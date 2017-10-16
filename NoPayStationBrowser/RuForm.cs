@@ -73,7 +73,10 @@ namespace NoPayStationBrowser
 
             currentDatabase = gamesDbs;
 
-            RefreshList(currentDatabase);
+            comboBox1.Items.Add("ALL");
+            comboBox1.Text = "ALL";
+            
+            //RefreshList(currentDatabase);
             if (Settings.instance.records != 0)
             {
                 var _new = gamesDbs.Count - Settings.instance.records;
@@ -83,12 +86,8 @@ namespace NoPayStationBrowser
 
             Settings.instance.records = gamesDbs.Count;
 
-            comboBox1.Items.Add("ALL");
             foreach (string s in regions)
                 comboBox1.Items.Add(s);
-
-            comboBox1.Text = "ALL";
-
         }
 
         List<Item> LoadDatabase(string path)
