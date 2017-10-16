@@ -50,13 +50,14 @@ namespace NoPayStationBrowser
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.retryUnpackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearCompletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.listViewEx1 = new ListViewEmbeddedControls.ListViewEx();
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clearCompletedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -132,7 +133,7 @@ namespace NoPayStationBrowser
             // 
             this.textBox1.Location = new System.Drawing.Point(12, 29);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(487, 20);
+            this.textBox1.Size = new System.Drawing.Size(409, 20);
             this.textBox1.TabIndex = 2;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -236,11 +237,27 @@ namespace NoPayStationBrowser
             this.retryUnpackToolStripMenuItem.Text = "Retry unpack";
             this.retryUnpackToolStripMenuItem.Click += new System.EventHandler(this.retryUnpackToolStripMenuItem_Click);
             // 
+            // clearCompletedToolStripMenuItem
+            // 
+            this.clearCompletedToolStripMenuItem.Name = "clearCompletedToolStripMenuItem";
+            this.clearCompletedToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.clearCompletedToolStripMenuItem.Text = "Clear completed";
+            this.clearCompletedToolStripMenuItem.Click += new System.EventHandler(this.clearCompletedToolStripMenuItem_Click);
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(427, 29);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(74, 21);
+            this.comboBox1.TabIndex = 15;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // listViewEx1
             // 
@@ -278,18 +295,12 @@ namespace NoPayStationBrowser
             this.columnHeader11.Text = "";
             this.columnHeader11.Width = 224;
             // 
-            // clearCompletedToolStripMenuItem
-            // 
-            this.clearCompletedToolStripMenuItem.Name = "clearCompletedToolStripMenuItem";
-            this.clearCompletedToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.clearCompletedToolStripMenuItem.Text = "Clear completed";
-            this.clearCompletedToolStripMenuItem.Click += new System.EventHandler(this.clearCompletedToolStripMenuItem_Click);
-            // 
             // NoPayStationBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(761, 524);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.listViewEx1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.pictureBox1);
@@ -349,6 +360,7 @@ namespace NoPayStationBrowser
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ToolStripMenuItem clearCompletedToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

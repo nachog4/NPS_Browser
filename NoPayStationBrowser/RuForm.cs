@@ -83,6 +83,12 @@ namespace NoPayStationBrowser
 
             Settings.instance.records = gamesDbs.Count;
 
+            comboBox1.Items.Add("ALL");
+            foreach (string s in regions)
+                comboBox1.Items.Add(s);
+
+            comboBox1.Text = "ALL";
+
         }
 
         List<Item> LoadDatabase(string path)
@@ -102,7 +108,7 @@ namespace NoPayStationBrowser
                 if (!itm.zRfi.ToLower().Contains("missing") && itm.pkg.ToLower().Contains("http://"))
                 {
                     dbs.Add(itm);
-                    regions.Add(itm.Region);
+                    regions.Add(itm.Region.Replace(" ", ""));
                 }
             }
 
@@ -133,7 +139,7 @@ namespace NoPayStationBrowser
 
             foreach (var item in currentDatabase)
             {
-                if (item.CompareName(textBox1.Text))
+                if (item.CompareName(textBox1.Text) && (comboBox1.Text == "ALL" || item.Region.Contains(comboBox1.Text)))
                     itms.Add(item);
             }
 
@@ -296,6 +302,11 @@ namespace NoPayStationBrowser
             toDelLVI.Clear();
 
 
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            textBox1_TextChanged(null, null);
         }
     }
 
