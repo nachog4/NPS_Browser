@@ -12,10 +12,20 @@ public class Settings
 
     public static Settings instance;
 
-    //public string defaultRegion;
     public string downloadDir;
     public string pkgPath;
     public string pkgParams;
+    public int records
+    {
+        get { return _records; }
+        set
+        {
+            _records = value;
+            Registry.SetValue(keyName, "records", value);
+        }
+    }
+
+    int _records = 0;
 
     public Settings()
     {
@@ -24,9 +34,10 @@ public class Settings
         downloadDir = Registry.GetValue(keyName, "downloadDir", "")?.ToString();
         pkgPath = Registry.GetValue(keyName, "pkgPath", "")?.ToString();
         pkgParams = Registry.GetValue(keyName, "pkgParams", null)?.ToString();
+        var rec = Registry.GetValue(keyName, "records", null)?.ToString();
+        if (rec != null) int.TryParse(rec, out _records);
 
         if (pkgParams == null) pkgParams = "{pkgFile} --make-dirs=ux --license=\"{zRifKey}\"";
-        //if (defaultRegion == null) defaultRegion = "ALL";
 
 
     }
@@ -40,5 +51,9 @@ public class Settings
         if (pkgParams != null)
             Registry.SetValue(keyName, "pkgParams", pkgParams);
     }
+
+
+
+
 
 }

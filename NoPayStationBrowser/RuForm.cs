@@ -65,11 +65,21 @@ namespace NoPayStationBrowser
 
             gamesDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=1180017671");
 
+
+
             dlcsDbs = LoadDatabase("https://docs.google.com/spreadsheets/d/18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs/export?format=tsv&id=18PTwQP7mlwZH1smpycHsxbEwpJnT8IwFP7YZWQT7ZSs&gid=743196745");
 
             currentDatabase = gamesDbs;
 
             RefreshList(currentDatabase);
+            if (Settings.instance.records != 0)
+            {
+                var _new = gamesDbs.Count - Settings.instance.records;
+                if (_new > 0)
+                    label1.Text += " (" + _new.ToString() + " new since last launch)";
+            }
+
+            Settings.instance.records = gamesDbs.Count;
 
         }
 
@@ -268,8 +278,10 @@ namespace NoPayStationBrowser
         {
             if (listView1.SelectedItems.Count == 0) return;
             Item itm = (listView1.SelectedItems[0].Tag as Item);
-            var r = Helpers.DataDownloader.GetRenascene(itm.TitleId);
-            if (r != null)
+
+            Helpers.Renascene r = new Helpers.Renascene(itm.TitleId);
+
+            if (r.imgUrl != null)
             {
                 pictureBox1.LoadAsync(r.imgUrl);
                 label5.Text = r.ToString();
