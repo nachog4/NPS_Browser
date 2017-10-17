@@ -9,9 +9,9 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
-namespace NoPayStationBrowser
+namespace NPS
 {
-    public partial class NoPayStationBrowser : Form
+    public partial class NPSBrowser : Form
     {
 
         List<Item> currentDatabase = new List<Item>();
@@ -21,14 +21,14 @@ namespace NoPayStationBrowser
 
         List<DownloadWorker> downloads = new List<DownloadWorker>();
 
-        public NoPayStationBrowser()
+        public NPSBrowser()
         {
             InitializeComponent();
             new Settings();
 
             if (string.IsNullOrEmpty(Settings.instance.GamesUri) && string.IsNullOrEmpty(Settings.instance.DLCUri))
             {
-                MessageBox.Show("Application did not provide any links to external files or decrypt mechanism.\r\nYou need to specify tsv (tab splitted text) file with your personal links to pkg files on your own.\r\n\r\nFormat: TitleId Region Name Pkg key", "Disclaimer!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Application did not provide any links to external files or decrypt mechanism.\r\nYou need to specify tsv (tab splitted text) file with your personal links to pkg files on your own.\r\n\r\nFormat: TitleId Region Name Pkg Key", "Disclaimer!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Options o = new Options();
                 o.ShowDialog();
             }

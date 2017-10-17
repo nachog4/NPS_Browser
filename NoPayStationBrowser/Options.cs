@@ -10,7 +10,7 @@ using System.IO;
 using System.Net;
 using Microsoft.Win32;
 
-namespace NoPayStationBrowser
+namespace NPS
 {
     public partial class Options : Form
     {

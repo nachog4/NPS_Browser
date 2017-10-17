@@ -1,6 +1,6 @@
-namespace NoPayStationBrowser
+namespace NPS
 {
-    partial class NoPayStationBrowser
+    partial class NPSBrowser
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace NoPayStationBrowser
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoPayStationBrowser));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NPSBrowser));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -295,7 +295,7 @@ namespace NoPayStationBrowser
             this.columnHeader11.Text = "";
             this.columnHeader11.Width = 224;
             // 
-            // NoPayStationBrowser
+            // NPSBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -314,8 +314,8 @@ namespace NoPayStationBrowser
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "NoPayStationBrowser";
-            this.Text = "NPS Browser v0.5";
+            this.Name = "NPSBrowser";
+            this.Text = "NPS Browser v0.51";
             this.Load += new System.EventHandler(this.NoPayStationBrowser_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

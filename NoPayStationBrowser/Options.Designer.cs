@@ -1,4 +1,4 @@
-namespace NoPayStationBrowser
+namespace NPS
 {
     partial class Options
     {

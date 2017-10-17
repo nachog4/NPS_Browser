@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
-namespace NoPayStationBrowser
+namespace NPS
 {
     public class DownloadWorker
     {
@@ -48,7 +48,7 @@ namespace NoPayStationBrowser
             Console.WriteLine("start process " + currentDownload.TitleName);
             timer.Start();
             isRunning = true;
-            DownloadFile(currentDownload);
+            DownloadFile(/*currentDownload*/);
         }
 
         public void Cancel()
@@ -83,21 +83,36 @@ namespace NoPayStationBrowser
             proc.Start();
         }
 
-        private void DownloadFile(Item item)
+        private void DownloadFile(/*Item item*/)
         {
             try
             {
-                currentDownload = item;
+                FetchFileName();
+                //currentDownload = item;
                 webClient = new WebClient();
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompleted);
                 webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
                 webClient.DownloadProgressChanged += (sender, e) => progressChangeForSpeed(e.BytesReceived);
-                webClient.DownloadFileAsync(new Uri(item.pkg), Settings.instance.downloadDir + "\\" + item.TitleId + ".pkg");
+                webClient.DownloadFileAsync(new Uri(currentDownload.pkg), Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg");
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message);
             }
+        }
+
+        void FetchFileName()
+        {
+            int count = 1;
+            string orgTitle = currentDownload.TitleId;
+
+            while (File.Exists(Settings.instance.downloadDir + "\\" + currentDownload.TitleId + ".pkg"))
+            {
+                currentDownload.TitleId = orgTitle + "_" + count;
+                count++;
+            }
+
+
         }
 
         private string currentSpeed = "Queued", progressString = "Queued";

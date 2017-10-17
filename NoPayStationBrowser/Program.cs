@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace NoPayStationBrowser
+namespace NPS
 {
     static class Program
     {
@@ -13,7 +13,7 @@ namespace NoPayStationBrowser
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new NoPayStationBrowser());
+            Application.Run(new NPSBrowser());
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace NoPayStationBrowser.Helpers
+namespace NPS.Helpers
 {
 
     public class Renascene
