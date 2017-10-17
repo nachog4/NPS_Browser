@@ -221,6 +221,7 @@ namespace NPS
         {
             if (listView1.SelectedItems.Count == 0) return;
             Item itm = (listView1.SelectedItems[0].Tag as Item);
+            lbl_query_size.Text = "0 MB";
 
             Helpers.Renascene r = new Helpers.Renascene(itm.TitleId);
 
@@ -332,7 +333,22 @@ namespace NPS
             listView1.Sort();
         }
 
+        private void btn_query_size_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0) return;
+            var a = (listView1.SelectedItems[0].Tag as Item);
 
+            var webRequest = HttpWebRequest.Create(a.pkg);
+            webRequest.Method = "HEAD";
+
+            using (var webResponse = webRequest.GetResponse())
+            {
+                var fileSize = webResponse.Headers.Get("Content-Length");
+                var fileSizeInMegaByte = Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
+                lbl_query_size.Text = fileSizeInMegaByte + " MB";
+            }
+
+        }
     }
 
     class ListViewItemComparer : IComparer

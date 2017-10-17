@@ -57,6 +57,8 @@ namespace NPS
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btn_query_size = new System.Windows.Forms.Button();
+            this.lbl_query_size = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -278,11 +280,32 @@ namespace NPS
             this.columnHeader11.Text = "";
             this.columnHeader11.Width = 224;
             // 
+            // btn_query_size
+            // 
+            this.btn_query_size.Location = new System.Drawing.Point(510, 47);
+            this.btn_query_size.Name = "btn_query_size";
+            this.btn_query_size.Size = new System.Drawing.Size(112, 23);
+            this.btn_query_size.TabIndex = 16;
+            this.btn_query_size.Text = "Query Size";
+            this.btn_query_size.UseVisualStyleBackColor = true;
+            this.btn_query_size.Click += new System.EventHandler(this.btn_query_size_Click);
+            // 
+            // lbl_query_size
+            // 
+            this.lbl_query_size.AutoSize = true;
+            this.lbl_query_size.Location = new System.Drawing.Point(628, 52);
+            this.lbl_query_size.Name = "lbl_query_size";
+            this.lbl_query_size.Size = new System.Drawing.Size(32, 13);
+            this.lbl_query_size.TabIndex = 17;
+            this.lbl_query_size.Text = "0 MB";
+            // 
             // NPSBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(761, 524);
+            this.Controls.Add(this.lbl_query_size);
+            this.Controls.Add(this.btn_query_size);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.pictureBox1);
@@ -343,6 +366,8 @@ namespace NPS
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ToolStripMenuItem clearCompletedToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button btn_query_size;
+        private System.Windows.Forms.Label lbl_query_size;
     }
 }
 
