@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,6 +19,8 @@ namespace NPS
         List<Item> gamesDbs = new List<Item>();
         List<Item> dlcsDbs = new List<Item>();
         HashSet<string> regions = new HashSet<string>();
+        int currentOrderColumn = 0;
+        bool currentOrderInverted = false;
 
         List<DownloadWorker> downloads = new List<DownloadWorker>();
 
@@ -314,6 +317,50 @@ namespace NPS
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1_TextChanged(null, null);
+        }
+
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (currentOrderColumn == e.Column) { currentOrderInverted = !currentOrderInverted; }
+            else
+            {
+                currentOrderColumn = e.Column; currentOrderInverted = false;
+            }
+
+            this.listView1.ListViewItemSorter = new ListViewItemComparer(currentOrderColumn, currentOrderInverted);
+            // Call the sort method to manually sort.
+            listView1.Sort();
+        }
+
+
+    }
+
+    class ListViewItemComparer : IComparer
+    {
+        private int col;
+        private bool invertOrder = false;
+        public ListViewItemComparer()
+        {
+            col = 0;
+        }
+        public ListViewItemComparer(int column, bool invertedOrder)
+        {
+            col = column;
+            invertOrder = invertedOrder;
+
+        }
+        public int Compare(object x, object y)
+        {
+            int returnVal = -1;
+            if (!invertOrder)
+            {
+                returnVal = String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+            }
+            else
+            {
+                returnVal = String.Compare(((ListViewItem)y).SubItems[col].Text, ((ListViewItem)x).SubItems[col].Text);
+            }
+            return returnVal;
         }
     }
 
